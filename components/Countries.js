@@ -4,18 +4,30 @@ import Country from "./Country";
 
 export default function Countries() {
   const [countries, setCountries] = useState([]);
+  const [search, setSearch] = useState([]);
 
   useEffect(() => {
     fetch("https://restcountries.com/v3.1/all")
       .then((res) => res.json())
-      .then((data) => setCountries(data));
+      .then((data) => {
+        setCountries(data);
+        setSearch(data);
+      });
   }, []);
+
+  const handleSearch = (text) => {
+    const filtered = countries.filter((country) =>
+      country.name.common.includes(text)
+    );
+    setSearch(filtered);
+  };
+
   return (
     <View>
-      <Text>Countries: {countries.length}</Text>
-      <TextInput style={styles.input} />
+      <Text>Countries: {search.length}</Text>
+      <TextInput onChangeText={handleSearch} style={styles.input} />
       <ScrollView>
-        {countries.map((country, index) => (
+        {search.map((country, index) => (
           <Country key={index} country={country} />
         ))}
       </ScrollView>
